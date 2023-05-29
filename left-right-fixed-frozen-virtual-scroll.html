@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>EJ2 Grid</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Typescript Grid Control">
+    <meta name="author" content="Syncfusion">
+    <link href="material.css" class="theme-primary" rel="stylesheet" />
+    <script src="ej2.min.js"></script>
+    <script src ="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="https://ej2.syncfusion.com/javascript/demos/grid/local-data/datasource.js" type="text/javascript"></script>
+    <link href="./styles/material.css" class="e-theme-primary"  rel="stylesheet" />
+</head>
+
+<body>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="control-wrapper">
+        <div id="default" style="padding-top:75px;">
+            <select id="theme"> 
+                <option value="material">material</option>
+                <option value="material-dark">material-dark</option>
+                <option value="material3-dark">material3-dark</option>
+                <option value="material3">material3</option>
+                <option value="fluent">fluent</option>
+                <option value="fluent-dark">fluent-dark</option>
+                <option value="bootstrap">bootstrap</option>
+                <option value="bootstrap-dark">bootstrap-dark</option>
+                <option value="bootstrap4">bootstrap4</option>
+                <option value="bootstrap5">bootstrap5</option>
+                <option value="fabric">fabric</option>
+                <option value="fabric-dark">fabric-dark</option>
+                <option value="tailwind">tailwind</option>
+                <option value="highcontrast">highcontrast</option>
+            </select>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="col-lg-4 property-section">
+        <table id="property" title="Properties">
+            <tbody>
+                <tr>
+                <td>
+                    <div>Frozen Rows </div>
+                </td>
+                <td>
+                    <div>
+                        <input id="rows" type="text">
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <button id="buttonSet">Set</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>allowDragandDrop </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="checkbox" tabindex="1" id='allowRowDragAndDrop' />
+                    </div>
+                </td>
+                <td>
+                    <div>allowFiltering </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="checkbox" tabindex="1" id='allowFiltering' />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <div style="padding-top: 7px">Selection Type</div>
+                </td>
+                <td style="padding-right: 10px">
+                    <div id='typeddl'>
+                        <input type="text" tabindex="1" id='type' />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <div>
+                        Selection Mode
+                    </div>
+                </td>
+                <td>
+                    <div style="padding-right: 10px;padding-bottom: 10px">
+                        <input type="text" tabindex="1" id='mode' />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>Enable Column Selection</div>
+                </td>
+                <td style="padding:10px 10px 10px 0px">
+                        <div>
+                            <input type="checkbox" tabindex="1" id='columnSelection'/>
+                        </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>Batch Editing Enable </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="checkbox" tabindex="1" id='batchEditing' />
+                    </div>
+                </td>
+
+                <td>
+                    <div>Enable enableInfiniteScrolling</div>
+                </td>
+                <td>
+                    <div>
+                        <input type="checkbox" tabindex="1" id='enableInfiniteScrolling' />
+                    </div>
+                </td>
+            </tr>
+        </tbody></table>
+    </div>
+    <div id="Grid"></div>
+
+    <script>
+         var type = [
+            { id: 'Single', type: 'Single' },
+            { id: 'Multiple', type: 'Multiple' }
+        ];
+        var mode = [
+            { id: 'Row', mode: 'Row' },
+            { id: 'Cell', mode: 'Cell' },
+            { id: 'Both', mode: 'Both' }
+        ];
+
+
+        var grid = new ej.grids.Grid({
+            dataSource: window.orderData,
+            height: 400,
+            width: 1200,
+            allowGrouping: true,
+            allowSelection: true,
+            allowExcelExport: true,
+            allowPdfExport: true,
+            selectionSettings: { type: 'Multiple' },
+            editSettings: { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal', newRowPosition: 'Top' },
+            toolbar: ['Add', 'Edit', 'Delete', 'Update', 'Cancel', 'Search', 'ColumnChooser', 'ExcelExport', 'PdfExport', 'CsvExport'],
+            allowSorting: true,
+            showColumnChooser: true,
+            allowReordering: true,
+            showColumnMenu: true,
+            allowResizing: true,
+            enableVirtualization: true,
+            rowSelected: function (args) {
+                console.log(args);
+            },
+            rowSelecting: function (args) {
+                console.log(args);
+            },
+            rowSelecting: selectingEvent,
+            cellSelecting : selectingEvent,
+            columns: [
+                { field: 'OrderID', headerText: 'Order ID',isPrimaryKey: true,   freeze: 'Left',width: 120, validationRules: { required: true, number: true }, textAlign: 'Right' },
+                { field: 'CustomerID', headerText: 'Customer ID', validationRules: { required: true }, width: 160, freeze: 'Left' },
+                { field: 'Freight', width: 150, format: 'C',format: 'C2', validationRules: { required: true }, textAlign: 'Right' },
+                { field: 'ShipName', headerText: 'Ship Name', width: '190' },
+                { field: 'ShipAddress', headerText: 'Ship Address', width: 190 },
+                { field: 'CustomerName', headerText: 'Customer Name', validationRules: { required: true }, width: 160, freeze: 'Fixed'  },
+                { field: 'OrderDate', headerText: 'Order Date', editType: 'datetimepickeredit', format: { type: 'dateTime', format: 'M/d/y hh:mm a' },
+                    width: 180
+                },
+                { field: 'ShipRegion', headerText: 'Ship Region', width: '150', freeze: 'Fixed' },
+                { field: 'ShipCountry', headerText: 'Ship Country', editType: 'dropdownedit', width: 170,
+                    edit: { params: { popupHeight: '300px' }  }
+                },
+                { field: 'ShippedDate', headerText: 'Shipped Date', editType: 'datetimepickeredit', format: { type: 'dateTime', format: 'M/d/y hh:mm a' },
+                    width: 160, freeze: 'Right' 
+                },
+                { field: 'ShipCity', headerText: 'Ship City', width: '150',  freeze: 'Right' },
+            ],
+            aggregates: [{
+                columns: [{
+                    type: 'Sum',
+                    field: 'Freight',
+                    groupFooterTemplate: 'Total units: ${Sum}'
+                },
+                {
+                    type: 'Max',
+                    field: 'Freight',
+                    groupCaptionTemplate: 'Maximum: ${Max}'
+                },
+                {
+                    type: 'Sum',
+                    field: 'Freight',
+                    format: 'C2',
+                    footerTemplate: 'Sum: ${Sum}'
+                }]
+            }],
+        });
+        grid.appendTo('#Grid');
+        function changesTheme() {
+            var path = listObj.text + '.css';
+            var path1 = './styles/' + listObj.text + '.css';
+            document.querySelector('.theme-primary').href = path.toString();
+            document.querySelector('.e-theme-primary').href = path1.toString();
+        }
+        
+        var listObj = new ej.dropdowns.DropDownList({
+            placeholder: 'Select a theme',
+            popupHeight: '200px',
+            width: '250px',
+            change: function () { changesTheme(); }
+            });
+        listObj.appendTo('#theme');
+
+        var rows = new ej.inputs.NumericTextBox({
+            min: 0,
+            max: 5,
+            validateDecimalOnType: true,
+            decimals: 0,
+            format: 'n',
+            value: 0
+        });
+        rows.appendTo('#rows');
+
+        var buttonSet = new ej.buttons.Button();
+        buttonSet.appendTo('#buttonSet');
+        if (ej.base.Browser.isDevice) {
+            columns.max = 1;
+            rows.max = 5;
+        }
+
+        document.getElementById('buttonSet').onclick = function () {
+            grid.frozenRows = rows.value;
+        };
+
+        var allowRowDragAndDrop = new ej.buttons.CheckBox();
+        allowRowDragAndDrop.appendTo('#allowRowDragAndDrop');
+
+        document.getElementById('allowRowDragAndDrop').onclick = function () {
+            if (allowRowDragAndDrop.checked) {
+                grid.allowRowDragAndDrop = true;
+            } else {
+                 grid.allowRowDragAndDrop = false;
+            }
+            grid.refresh();
+        };
+
+        var allowFiltering = new ej.buttons.CheckBox();
+        allowFiltering.appendTo('#allowFiltering');
+
+        document.getElementById('allowFiltering').onclick = function () {
+            if (allowFiltering.checked) {
+                grid.allowFiltering = true;
+            } else {
+                 grid.allowFiltering = false;
+            }
+        };
+
+
+        
+        var batchEditing = new ej.buttons.CheckBox();
+        batchEditing.appendTo('#batchEditing');
+
+        document.getElementById('batchEditing').onclick = function () {
+            if (batchEditing.checked) {
+                grid.editSettings.mode = 'Batch';
+            } else {
+                grid.editSettings.mode = 'Normal';
+            }
+            grid.refresh();
+        };
+
+        var enableInfiniteScrolling = new ej.buttons.CheckBox();
+        enableInfiniteScrolling.appendTo('#enableInfiniteScrolling');
+
+        document.getElementById('enableInfiniteScrolling').onclick = function () {
+            if (enableInfiniteScrolling.checked) {
+                grid.enableVirtualization = false;
+                grid.enableInfiniteScrolling = true;
+            } else {
+                grid.enableInfiniteScrolling = false;
+                grid.enableVirtualization = true;
+            }
+            grid.refresh();
+        };
+        
+        
+        function selectingEvent(e) {
+            if (grid.selectionSettings.allowColumnSelection) {
+                e.cancel = true;
+            }
+        }
+
+    //Render DropDownList component for selection type.
+     var dropDownType = new ej.dropdowns.DropDownList({
+        dataSource: type,
+        fields: { text: 'type', value: 'id' },
+        value: 'Multiple',
+        change: function (e) {
+            var type = e.value;
+            grid.selectionSettings.type = type;
+        }
+    });
+    dropDownType.appendTo('#type');
+
+   //Render DropDownList component for selection type.
+    var dropDownMode = new ej.dropdowns.DropDownList({
+        dataSource: mode,
+        fields: { text: 'mode', value: 'id' },
+        value: 'Row',
+        change: function (e) {
+            var mode = e.value;
+            grid.selectionSettings.mode = mode;
+            if (mode == 'Row') {
+                grid.selectionSettings.persistSelection = true;
+            } else {
+                grid.selectionSettings.persistSelection = false;
+            }
+        },
+    });
+    dropDownMode.appendTo('#mode');
+
+    // enable/disable Column Selection
+    var columnSelection = new ej.buttons.CheckBox({
+        change: function (e) {
+            grid.clearSelection();
+            if (e.checked) {
+                grid.selectionSettings.allowColumnSelection = true;
+                dropDownMode.enabled = false;
+            } else {
+                grid.selectionSettings.allowColumnSelection = false;
+                dropDownMode.enabled = true;
+            }
+        }
+    }); 
+    columnSelection.appendTo('#columnSelection');
+
+       
+    </script>
+</body>
+
+</html>
